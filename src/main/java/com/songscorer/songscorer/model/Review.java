@@ -31,8 +31,8 @@ public class Review {
     @NotNull
     private Integer rating;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private User user;
+    @JoinColumn(name = "userAccountId", referencedColumnName = "userAccountId")
+    private UserAccount user;
     private Instant createdDate;
 
 

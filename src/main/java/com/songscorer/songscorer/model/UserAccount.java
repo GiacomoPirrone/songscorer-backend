@@ -21,10 +21,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class UserAccount {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long userId;
+    private Long userAccountId;
     @NotBlank(message = "Username is required")
     private String username;
     @NotBlank(message = "Pasword is required")
