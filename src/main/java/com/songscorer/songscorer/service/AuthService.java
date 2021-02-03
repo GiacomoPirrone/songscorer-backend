@@ -1,7 +1,6 @@
 package com.songscorer.songscorer.service;
 
 import com.songscorer.songscorer.dto.RegisterRequest;
-import com.songscorer.songscorer.model.NotificationEmail;
 import com.songscorer.songscorer.model.UserAccount;
 import com.songscorer.songscorer.model.VerificationToken;
 import com.songscorer.songscorer.repository.UserAccountRepository;
@@ -26,7 +25,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserAccountRepository userAccountRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final MailService mailService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
@@ -42,17 +40,13 @@ public class AuthService {
         userAccountRepository.save(userAccount);
 
         String token = generateVerificationToken(userAccount);
-        mailService.sendMail(new NotificationEmail("Please Activate your Account",
-                userAccount.getEmail(), "Thank you for signing up to Symphonyze! \n" +
-                "To activate your account please click the url provided below: \n" +
-                "http://localhost:8080/api/auth/accountVerification/"));
     }
 
     private String generateVerificationToken(UserAccount userAccount) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
-        verificationToken.setUserAccount(userAccount);
+        verificationToken.setUser(userAccount);
 
         verificationTokenRepository.save(verificationToken);
         return token;
