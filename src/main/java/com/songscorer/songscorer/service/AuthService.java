@@ -47,7 +47,7 @@ public class AuthService {
         mailService.sendMail(new NotificationEmail("Please Activate your Account",
                 userAccount.getEmail(), "Thank you for signing up to Symphonyze! \n" +
                 "To activate your account please click the url provided below: \n" +
-                "http://localhost:8080/api/auth/accountVerification/"));
+                "http://localhost:8080/api/auth/accountVerification/" + token));
     }
 
     private String generateVerificationToken(UserAccount userAccount) {
