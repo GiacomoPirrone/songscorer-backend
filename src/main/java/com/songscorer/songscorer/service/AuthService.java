@@ -1,7 +1,6 @@
 package com.songscorer.songscorer.service;
 
 import com.songscorer.songscorer.dto.RegisterRequest;
-import com.songscorer.songscorer.exceptions.SymphonyzeException;
 import com.songscorer.songscorer.model.NotificationEmail;
 import com.songscorer.songscorer.model.UserAccount;
 import com.songscorer.songscorer.model.VerificationToken;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -58,21 +56,5 @@ public class AuthService {
 
         verificationTokenRepository.save(verificationToken);
         return token;
-    }
-
-    public void verifyAccount(String token) {
-        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        verificationToken.orElseThrow(() -> new SymphonyzeException("Invalid Token"));
-        fetchUserAccountAndEnable(verificationToken.get());
-    }
-
-    @Transactional
-    private void fetchUserAccountAndEnable(VerificationToken verificationToken) {
-        String username = verificationToken.getUserAccount().getUsername();
-        UserAccount userAccount = userAccountRepository.findByUsername(username)
-            .orElseThrow(() -> new SymphonyzeException("User with name '" + username + "' not found"));
-        userAccount.setEnabled(true);
-        userAccountRepository.save(userAccount);
-
     }
 }

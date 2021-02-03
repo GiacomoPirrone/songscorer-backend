@@ -25,8 +25,8 @@ class MailService {
     public void sendMail(NotificationEmail notificationEmail) {
 
         // Details for connecting to smtp server so that we can send emails from the backend
-        final String username = "";
-        final String password = "";
+        final String username = "verify@symphonyze.com";
+        final String password = "fuGXWKH7zF7a3P";
         final String host = "localhost";
 
         System.out.println("TLSEmail Start");
@@ -65,7 +65,7 @@ class MailService {
              * Set which email this message is coming from, in this case
              * it is coming from our verification email address
              */
-            message.setFrom(new InternetAddress(""));
+            message.setFrom(new InternetAddress("verify@symphonyze.com"));
 
             /*
              * Set which email you are sending the verification email to,
