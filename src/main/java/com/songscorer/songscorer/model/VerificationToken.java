@@ -23,6 +23,6 @@ public class VerificationToken {
     private Long id;
     private String token;
     @OneToOne(fetch = LAZY)
-    private UserAccount user;
+    private UserAccount userAccount;
     private Instant expiryDate;
 }
