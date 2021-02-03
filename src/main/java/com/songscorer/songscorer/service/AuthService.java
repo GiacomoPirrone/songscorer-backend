@@ -5,6 +5,7 @@ import com.songscorer.songscorer.model.UserAccount;
 import com.songscorer.songscorer.model.VerificationToken;
 import com.songscorer.songscorer.repository.UserAccountRepository;
 import com.songscorer.songscorer.repository.VerificationTokenRepository;
+import com.songscorer.songscorer.exceptions.SymphonyzeException;
 import lombok.AllArgsConstructor;
 import com.songscorer.songscorer.model.NotificationEmail;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -56,5 +58,21 @@ public class AuthService {
 
         verificationTokenRepository.save(verificationToken);
         return token;
+    }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+        verificationToken.orElseThrow(() -> new SymphonyzeException("Invalid Token"));
+        fetchUserAccountAndEnable(verificationToken.get());
+    }
+
+    @Transactional
+    private void fetchUserAccountAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUserAccount().getUsername();
+        UserAccount userAccount = userAccountRepository.findByUsername(username)
+                .orElseThrow(() -> new SymphonyzeException("User with name '" + username + "' not found"));
+        userAccount.setEnabled(true);
+        userAccountRepository.save(userAccount);
+
     }
 }
