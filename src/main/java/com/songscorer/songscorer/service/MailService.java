@@ -12,6 +12,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+import static com.songscorer.songscorer.constants.SmtpConstants.*;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -23,8 +25,8 @@ class MailService {
     public void sendMail(NotificationEmail notificationEmail) {
 
         // Details for connecting to smtp server so that we can send emails from the backend
-        final String username = "";
-        final String password = "";
+        final String username = SMTP_USERNAME;
+        final String password = SMTP_PASSWORD;
         final String host = "localhost";
 
         System.out.println("TLSEmail Start");
@@ -34,7 +36,7 @@ class MailService {
         props.put("mail.smtp.auth", true);
         props.put("mail.smtp.starttls.enable", true);
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.port", SMTP_PORT);
 
         // Set the SSL Factory
         props.put("mail.smtp.socketFactory.class",
@@ -50,8 +52,8 @@ class MailService {
                     // Override the getPasswordAuthentication method
                     protected PasswordAuthentication
                     getPasswordAuthentication() {
-                        return new PasswordAuthentication("username",
-                                "password");
+                        return new PasswordAuthentication(SMTP_USERNAME,
+                                SMTP_PASSWORD);
                     }
                 });
         try {
@@ -63,7 +65,7 @@ class MailService {
              * Set which email this message is coming from, in this case
              * it is coming from our verification email address
              */
-            message.setFrom(new InternetAddress(""));
+            message.setFrom(new InternetAddress(SMTP_USERNAME));
 
             /*
              * Set which email you are sending the verification email to,
@@ -80,7 +82,7 @@ class MailService {
              * mail server, SSL port, username (verify@symphonyze.com), and password
              */
             Transport transport = session.getTransport("smtps");
-            transport.connect("mail.privateemail.com", 465, username, password);
+            transport.connect(SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD);
 
             // In case we need to send to multiple addresses, we pass an array of recipients
             transport.sendMessage(message, message.getAllRecipients());
