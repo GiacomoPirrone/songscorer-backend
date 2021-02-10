@@ -1,5 +1,7 @@
 package com.songscorer.songscorer.controller;
 
+import com.songscorer.songscorer.dto.AuthenticationResponse;
+import com.songscorer.songscorer.dto.LoginRequest;
 import com.songscorer.songscorer.dto.RegisterRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,5 +30,10 @@ public class AuthController {
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Successfully Activated", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 }

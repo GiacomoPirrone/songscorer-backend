@@ -1,13 +1,20 @@
 package com.songscorer.songscorer.service;
 
+import com.songscorer.songscorer.dto.AuthenticationResponse;
+import com.songscorer.songscorer.dto.LoginRequest;
 import com.songscorer.songscorer.dto.RegisterRequest;
 import com.songscorer.songscorer.model.UserAccount;
 import com.songscorer.songscorer.model.VerificationToken;
 import com.songscorer.songscorer.repository.UserAccountRepository;
 import com.songscorer.songscorer.repository.VerificationTokenRepository;
 import com.songscorer.songscorer.exceptions.SymphonyzeException;
+import com.songscorer.songscorer.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import com.songscorer.songscorer.model.NotificationEmail;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +35,8 @@ public class AuthService {
     private final UserAccountRepository userAccountRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
@@ -38,7 +47,7 @@ public class AuthService {
         userAccount.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         //The users account must document when the account was created, take the time of the instant
         userAccount.setCreated(Instant.now());
-        //The users account must be enabled befoere it can login, set it to disabled
+        //The users account must be enabled before it can login, set it to disabled
         userAccount.setEnabled(false);
         userAccountRepository.save(userAccount);
 
@@ -67,12 +76,22 @@ public class AuthService {
     }
 
     @Transactional
-    private void fetchUserAccountAndEnable(VerificationToken verificationToken) {
+    public void fetchUserAccountAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUserAccount().getUsername();
         UserAccount userAccount = userAccountRepository.findByUsername(username)
                 .orElseThrow(() -> new SymphonyzeException("User with name '" + username + "' not found"));
         userAccount.setEnabled(true);
         userAccountRepository.save(userAccount);
 
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
+        ));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        String token = jwtProvider.generateToken(auth);
+        return new AuthenticationResponse(token, loginRequest.getUsername());
     }
 }
