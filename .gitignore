@@ -32,3 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/java/com/songscorer/songscorer/constants/SmtpConstants.java
+/src/main/resources/symphonyze.jks
+/src/main/java/com/songscorer/songscorer/constants/JksConstants.java
