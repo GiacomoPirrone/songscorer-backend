@@ -20,6 +20,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
+    /*
+     * Here we are letting spring know which authentication manager to use as their are
+     * multiple, spring will not be able to automatically decide which one to use therefore
+     * we will explicitly define which one to use
+     */
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -49,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        // Setting the UserDetailsService class for our AuthenticationManagerBuilder and password encoder
         authenticationManagerBuilder.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
