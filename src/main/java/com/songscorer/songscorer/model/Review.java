@@ -24,7 +24,7 @@ public class Review {
     @GeneratedValue(strategy = IDENTITY)
     private Long reviewId;
     @NotNull
-    private String spotifyAlbumUrl;
+    private String spotifyAlbumId;
     @Nullable
     @Lob
     private String reviewDescription;
@@ -34,6 +34,4 @@ public class Review {
     @JoinColumn(name = "userAccountId", referencedColumnName = "userAccountId")
     private UserAccount userAccount;
     private Instant createdDate;
-
-
 }
