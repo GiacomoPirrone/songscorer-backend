@@ -71,7 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean doNotFilter =
                 "/api/auth/login".equals(path) |
                 "/api/auth/signup".equals(path) |
-                "/accountVerification/{token}".equals(path);
+                "/accountVerification/{token}".equals(path) |
+                "/api/auth/refresh/token".equals(path) |
+                "/api/auth/logout".equals(path);
         // If the user requests one of these endpoints doFilter = true, else return false and do filter the request
         return doNotFilter;
     }
