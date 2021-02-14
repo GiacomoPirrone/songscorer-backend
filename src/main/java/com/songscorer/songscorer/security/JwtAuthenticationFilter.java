@@ -73,7 +73,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 "/api/auth/signup".equals(path) |
                 "/accountVerification/{token}".equals(path) |
                 "/api/auth/refresh/token".equals(path) |
-                "/api/auth/logout".equals(path);
+                "/api/auth/logout".equals(path) |
+                "/v2/api-docs".equals(path) |
+                "/configuration/ui".equals(path) |
+                "/swagger-resources/**".equals(path) |
+                "/configuration/security".equals(path) |
+                "/swagger-ui.html".equals(path) |
+                "/webjars/**".equals(path);
         // If the user requests one of these endpoints doFilter = true, else return false and do filter the request
         return doNotFilter;
     }
